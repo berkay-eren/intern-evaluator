@@ -1,15 +1,15 @@
-# Şifreler ve API anahtarları — asla GitHub'a gitmemeli
+# şifreler ve API
 .env
 .env.local
 
-# Node.js
+# node.js
 node_modules/
 .next/
 
-# Editör / işletim sistemi
+# editör / işletim sistemi
 .vscode/
 .DS_Store
 Thumbs.db
 
-# Test için indirdiğimiz CV'ler (başkalarının kişisel verisi)
+# test için indirdilen CV'ler
 sample-cvs/
