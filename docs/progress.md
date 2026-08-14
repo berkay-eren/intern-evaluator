@@ -16,7 +16,7 @@ Akış: **Form → CV metin çıkarımı → LLM değerlendirmesi → Doğrulama
 | Orkestrasyon | n8n Cloud |
 | LLM | Anthropic `claude-opus-5`, structured output (`output_config.format` + JSON Schema) |
 | Veritabanı | Supabase (PostgreSQL), region Frankfurt |
-| Dashboard | Next.js (henüz başlanmadı) |
+| Dashboard | Next.js 16 (App Router, Tailwind v4) — Vercel'de canlı |
 | Repo | GitHub: `intern-evaluator` |
 
 ---
@@ -121,14 +121,36 @@ Her kriter ayrıca `status: kanitli | bilinmiyor` taşır — "bilgi yok" ile "y
 
 - [x] 8. node'un (evaluations insert) testini tamamla
 - [x] CV dosyasını Supabase Storage'a yükle, `cv_url` alanını doldur
-- [ ] Workflow'u aktifleştir → Production form URL'i
+- [x] Workflow'u aktifleştir → Production form URL'i
+- [x] Next.js public dashboard: liste + skora göre sıralama + Evet/Belki/Hayır filtresi
+- [x] Aday detay görünümü
+- [x] 3 demo aday verisi (+ Berkay'ın kendi gerçek başvurusu)
+- [x] `.env.local.example`
 - [ ] Hata yönetimi (LLM hatası, PDF okunamaması, doğrulama sorunları)
-- [ ] Next.js public dashboard: liste + skora göre sıralama + Evet/Belki/Hayır filtresi
-- [ ] Aday detay görünümü
-- [ ] 2–3 demo aday verisi
-- [ ] `.env.example`
 - [ ] README, mimari diyagram, teslim mesajı
 - [ ] Mock interview
+
+## Canlı adresler
+
+- Dashboard: https://intern-evaluator.vercel.app
+- Repo: https://github.com/berkay-eren/intern-evaluator
+- Başvuru formu: n8n production URL (workflow yayında)
+
+## Dashboard notları
+
+- `dashboard/` klasöründe. Vercel'de **Root Directory = `dashboard`** ayarlı.
+- Okuma `anon` anahtarıyla; RLS yalnızca `select` verdiği için yazma mümkün değil.
+- CV linkleri sunucu tarafında `service_role` ile 10 dakikalık **imzalı URL** olarak
+  üretiliyor — bucket private kalıyor, dosyalar dizine düşmüyor.
+- Ham `cv_text` sayfada hiç gösterilmiyor (PDF üstbilgisinden gelen yerel dosya
+  yolları demo veride `cv_text` içine sızmıştı).
+- Ortam değişkenleri Vercel'e **elle** giriliyor; `.env.local` gitignore'da.
+
+### Karşılaşılan iki tuzak
+
+1. `NEXT_PUBLIC_SUPABASE_URL` sonuna `/rest/v1/` eklenirse "Invalid path specified
+   in request URL" hatası gelir — `supabase-js` o yolu kendisi ekliyor, kök adres yeterli.
+2. Vercel'de ortam değişkeni değiştirmek mevcut siteyi güncellemez; **Redeploy** şart.
 
 ## Kullanıcı hakkında not
 

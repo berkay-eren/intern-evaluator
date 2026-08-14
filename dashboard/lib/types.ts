@@ -51,9 +51,9 @@ export const CRITERION_LABELS: { key: CriterionKey; label: string }[] = [
   { key: "rest_api", label: "REST API bilgisi" },
   { key: "llm_experience", label: "LLM deneyimi" },
   { key: "agentic_mcp", label: "Agentic AI / MCP" },
-  { key: "learning_signals", label: "Ogrenme sinyalleri" },
-  { key: "bonus_tools", label: "Bonus araclar" },
-  { key: "relevant_major", label: "Ilgili bolum" },
+  { key: "learning_signals", label: "Öğrenme sinyalleri" },
+  { key: "bonus_tools", label: "Bonus araçlar" },
+  { key: "relevant_major", label: "İlgili bölüm" },
 ];
 
 /**
