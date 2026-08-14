@@ -9,8 +9,8 @@ Form: https://berkayeren.app.n8n.cloud/form/6f0f617e-2791-41be-883a-39b5927ad1a7
 
 Pano: https://intern-evaluator.vercel.app
 
-Panodaki dört kayıttan üçü akışı test etmek için yazdığım kurgusal aday, biri kendi
-başvurum.
+Panodaki kayıtlardan üçü akışı test etmek için yazdığım kurgusal aday, biri kendi
+başvurum. Beşincisi prompt injection testi, aşağıda anlatıyorum.
 
 ## Akış
 
