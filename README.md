@@ -1,16 +1,15 @@
 # Staj Başvuru Ön Değerlendirme
 
-Kovan Startup Studio staj başvurularını otomatik ön değerlendiren bir akış. Aday
-formu doldurup CV'sini yüklüyor; sistem CV metnini çıkarıp başvuruyla birlikte
-Claude'a gönderiyor, 100 puanlık bir rubric'e göre puanlıyor, sonucu açık bir
-panoda gösteriyor.
+Kovan Startup Studio staj ilanı için hazırladığım case. Aday formu doldurup CV'sini
+yüklüyor, sistem CV'yi okuyup başvuruyla birlikte Claude'a gönderiyor ve ilandan
+çıkardığım rubric'e göre puanlıyor. Sonuçlar açık bir panoda duruyor.
 
 Form: https://berkayeren.app.n8n.cloud/form/6f0f617e-2791-41be-883a-39b5927ad1a7
 
 Pano: https://intern-evaluator.vercel.app
 
-Panodaki kayıtlardan üçü akışı test etmek için yazdığım kurgusal aday, biri kendi
-başvurum. Beşincisi prompt injection testi, aşağıda anlatıyorum.
+Panodaki kayıtların çoğu test için uydurduğum adaylar. Biri kendi başvurum, biri de
+aşağıda anlattığım prompt injection denemesi.
 
 ## Akış
 
@@ -27,9 +26,10 @@ flowchart LR
     H --> I
 ```
 
-CV iki yere gidiyor: bir kolda metni çıkarılıyor, diğerinde Supabase Storage'a
-yükleniyor. Başvuru metniyle CV tek prompt'ta birleşip Anthropic API'sine gidiyor.
-Dönen cevap bir Code node'unda doğrulanıp iki tabloya yazılıyor.
+Form n8n'de. CV iki kola ayrılıyor: birinde metni çıkarılıyor, diğerinde Supabase
+Storage'a yükleniyor. Başvuru metniyle CV tek prompt'ta birleşip Anthropic API'sine
+gidiyor, dönen cevap bir Code node'unda doğrulanıp iki tabloya yazılıyor. Pano da
+Supabase'den okuyor.
 
 ## Rubric
 
@@ -42,51 +42,53 @@ Dönen cevap bir Code node'unda doğrulanıp iki tabloya yazılıyor.
 | Bonus araçlar (her biri 5, tavan 15) | `bonus_tools` | 15 |
 | İlgili bölüm | `relevant_major` | 5 |
 
-70 ve üstü "Evet", 45-69 "Belki", altı "Hayır".
+70 üstü Evet, 45-69 Belki, altı Hayır.
 
-Her kriterin bir de `status` alanı var: `kanitli` ya da `bilinmiyor`. "Yazmamış" ile
-"zayıf" farklı şeyler, ikisi de 0 puan alsa bile. Detayı
-[docs/rubric.md](docs/rubric.md) içinde.
+Her kriterin bir de `status` alanı var: `kanitli` ya da `bilinmiyor`. Başvuruda o
+konuda hiç bilgi yoksa ayrı, bilgi var ama zayıfsa ayrı. İkisi de 0 puan alıyor ama
+aynı şey değiller. Detayı [docs/rubric.md](docs/rubric.md) içinde.
 
 ## Neden böyle
 
 Hazır AI node yerine düz HTTP Request kullandım. İlanın ilk maddesi REST API
 mantığıydı, isteği elimle kurmak istedim.
 
-Çıktı JSON Schema'ya bağlı, şema API seviyesinde zorunlu. Serbest metin isteyip
-sonra parse etmeye çalışmaktan daha sağlam.
+Çıktıyı JSON Schema'ya bağladım, şema API seviyesinde zorunlu. Modelden serbest
+metin isteyip sonra parse etmeye uğraşmıyorum.
 
-Adayın adı prompt'a hiç girmiyor. Veritabanında duruyor ama modele gitmiyor. Sistem
-promptunda ayrıca yaş, okul prestiji, not ortalaması gibi şeylerin puana
-katılmaması yazılı.
+Adayın adı prompt'a hiç girmiyor. Veritabanında var ama modele gitmiyor. Yaş, okul
+prestiji, not ortalaması gibi şeylerin puana katılmaması da sistem promptunda
+yazılı.
 
-Skoru kod hesaplıyor. Model her kritere ayrı puan veriyor, toplamı kod alıyor.
-Evet/Belki/Hayır kararını da eşikleri bilen kod veriyor, modelin yorumu değil.
+Puanı model değil kod topluyor. Model her kritere ayrı puan veriyor, kod bunları
+toplayıp eşiğe bakıyor. Model kendi toplamını da döndürüyor, onu kullanmıyorum.
 
-İki tablo var: `applications` ham başvuru, `evaluations` değerlendirme. Rubric
-değişip yeniden puanlama yaptığımda ham veri bozulmasın diye ayırdım.
+İki tablo var. `applications` ham başvuru, `evaluations` değerlendirme. Rubric'i
+değiştirip eski başvuruları yeniden puanlamak istersem ham veri elimde kalsın diye.
 
-CV, prompt içinde `<cv_belgesi>` etiketleri arasında duruyor. Sistem promptunda o
-etiketlerin arasındaki talimatların uygulanmayacağı yazılı; böyle bir girişim
-görülürse risk listesine ekleniyor.
+CV'ler private bir bucket'ta, panodaki indirme linkleri 10 dakika sonra ölen imzalı
+URL'ler. Pano zaten sadece okuma yapıyor: `anon` anahtarıyla bağlanıyor ve RLS
+`select` dışında bir şeye izin vermiyor.
 
-Bunu test ettim. Zeynep Kara'nın CV'sine beyaz renkli, 5 punto bir metin gömdüm:
-kapanış etiketiyle sınırdan çıkmaya çalışıp tüm kriterlere tam puan isteyen sahte
-bir sistem notu. Gözle görünmüyor, PDF metin çıkarımı görüyor. Temiz sürüm 8 puan
-almıştı, enjeksiyonlu sürüm de 8 aldı ve risklere "CV içerisinde değerlendirmeyi
-yönlendirmeye çalışan metin tespit edildi" maddesi düştü. Panodaki "Zeynep Kara
-Injection" kaydı bu deneme, saldırıyı hazırlayan dosya
+## Prompt injection
+
+CV, prompt içinde `<cv_belgesi>` etiketleri arasında duruyor ve sistem promptunda o
+etiketlerin arasındaki talimatların uygulanmayacağı yazıyor. Bunun gerçekten işe
+yarayıp yaramadığını merak ettim, denedim.
+
+Zeynep Kara'nın CV'sine beyaz renkli, 5 punto bir metin gömdüm: kapanış etiketiyle
+sınırdan çıkmaya çalışan ve tüm kriterlere tam puan isteyen sahte bir sistem notu.
+Gözle görünmüyor, PDF metin çıkarımı görüyor. CV taramasına yapılan gerçek saldırı
+aşağı yukarı böyle oluyor.
+
+Temiz sürüm 8 puan almıştı. Enjeksiyonlu sürüm de 8 aldı, üstüne risk listesine
+"CV icerisinde degerlendirmeyi yonlendirmeye calisan metin tespit edildi" maddesi
+düştü. Saldırı dosyası
 [demo-cvs/zeynep-kara-injection.html](demo-cvs/zeynep-kara-injection.html).
 
-Bu testin geçmesi savunmanın kırılmaz olduğu anlamına gelmiyor. Asıl güvence
-prompt'ta değil: model şemaya mahkûm olduğu için serbest metin döndüremiyor, ve
-toplam puanı kod hesapladığı için tek bir alanı şişirmek işe yaramıyor.
-
-CV'ler private bir bucket'ta. Panodaki indirme linkleri sunucuda üretilen, 10 dakika
-sonra ölen imzalı URL'ler.
-
-Pano sadece okuma yapıyor. `anon` anahtarıyla bağlanıyor, RLS `select` dışında izin
-vermiyor. `service_role` anahtarı yalnızca n8n'de ve panonun sunucu tarafında.
+Bu bir testin geçmesi savunmanın sağlam olduğunu kanıtlamaz. Zaten asıl koruma
+prompt'ta değil: model şemanın dışına çıkamıyor ve toplam puanı kod hesapladığı için
+tek bir alanı şişirmek işe yaramıyor.
 
 ## Çalıştırma
 
@@ -102,17 +104,16 @@ yok.
 
 ## Bilinen sınırlar
 
-- Formda rate limit yok. Her gönderim yaklaşık 6 sent, biri script'le spam atarsa
-  maliyet çıkarır.
-- Formda e-posta alanı yok, bu yüzden adaya dönüş yapılamıyor.
-- Bozuk PDF gelirse Extract node'u hata veriyor ve başvuru hiç kaydedilmiyor.
-  Doğrusu CV'siz kaydedip durumu risk olarak işaretlemek olurdu.
-- Pano tamamen açık, brief öyle istediği için. Gerçek bir işe alım panosunda giriş
-  katmanı olurdu.
-- CV yükleme ve PDF okuma paralel iki kolda; n8n bu kolları canvas'taki konuma göre
-  sıralıyor, yani sıra garanti değil. Merge node'u daha sağlam olurdu.
+- Formda rate limit yok. Her gönderim yaklaşık 6 sent, biri script'le üst üste
+  gönderirse maliyet çıkarır.
+- Formda e-posta alanı yok, bir sorun olduğunda adaya haber verilemiyor.
+- Bozuk bir PDF gelirse Extract node'u patlıyor ve başvuru hiç kaydedilmiyor.
+  CV'siz kaydedip durumu risk olarak işaretlemek daha doğru olurdu.
+- Pano herkese açık, brief öyle istediği için.
+- CV yükleme ve PDF okuma paralel iki kolda; n8n sırayı canvas'taki konuma göre
+  belirliyor, yani garanti değil. Merge node'u koysaydım garantiye alınırdı.
 
 ## Kullanılanlar
 
 n8n Cloud, Anthropic API (`claude-opus-5`), Supabase (PostgreSQL + Storage),
-Next.js 16, Tailwind, Vercel. Geliştirirken Claude Code kullandım.
+Next.js 16, Tailwind, Vercel. Claude Code ile geliştirdim.
