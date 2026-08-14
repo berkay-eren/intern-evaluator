@@ -86,9 +86,10 @@ export default async function Page({
           </a>
         </div>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">
-          Başvurular n8n üzerinden alınıp CV metniyle birlikte Claude&apos;a gönderiliyor,
-          100 puanlık bir rubric&apos;e göre puanlanıp Supabase&apos;e kaydediliyor. Skor,
-          modelin verdiği toplam değil; kriter puanlarının kodda yeniden hesaplanmış toplamı.
+          Formdan gelen başvurular, CV metniyle birlikte Claude&apos;a gönderilip altı
+          kriterlik bir rubric üzerinden puanlanıyor. Aday adı modele hiç gitmiyor;
+          toplam puanı da modelin verdiği sayı değil, kriter puanlarını toplayan kod
+          belirliyor. Bir adaya tıklayınca puanın hangi kanıta dayandığını görebilirsin.
         </p>
       </header>
 
