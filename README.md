@@ -7,7 +7,7 @@ panoda gösteriyor.
 
 Form: https://berkayeren.app.n8n.cloud/form/6f0f617e-2791-41be-883a-39b5927ad1a7
 
-Dashboard: https://intern-evaluator.vercel.app
+Pano: https://intern-evaluator.vercel.app
 
 Panodaki dört kayıttan üçü akışı test etmek için yazdığım kurgusal aday, biri kendi
 başvurum.
