@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSupabase } from "@/lib/supabase";
+import { FORM_URL } from "@/lib/config";
 import type { Recommendation } from "@/lib/types";
 import { RecommendationBadge, ScoreBar } from "@/components/badges";
 
@@ -71,10 +72,20 @@ export default async function Page({
   return (
     <main className="mx-auto max-w-5xl px-6 py-12 sm:py-16">
       <header className="border-b border-slate-200 pb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
-          Staj Başvuru Ön Değerlendirmesi
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            Staj Başvuru Ön Değerlendirmesi
+          </h1>
+          <a
+            href={FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
+          >
+            Başvuru formu →
+          </a>
+        </div>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-600">
           Başvurular n8n üzerinden alınıp CV metniyle birlikte Claude&apos;a gönderiliyor,
           100 puanlık bir rubric&apos;e göre puanlanıp Supabase&apos;e kaydediliyor. Skor,
           modelin verdiği toplam değil; kriter puanlarının kodda yeniden hesaplanmış toplamı.
