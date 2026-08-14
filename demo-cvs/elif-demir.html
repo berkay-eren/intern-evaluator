@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Elif Demir - CV</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Calibri, Arial, sans-serif;
+    font-size: 10.5pt; line-height: 1.45; color: #1a1a1a;
+    max-width: 178mm; margin: 0 auto; padding: 10mm;
+  }
+  h1 { font-size: 20pt; margin: 0 0 2px; letter-spacing: -0.3px; }
+  .contact { font-size: 9.5pt; color: #555; margin-bottom: 16px; }
+  h2 {
+    font-size: 11pt; text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 1.5px solid #1a1a1a; padding-bottom: 3px;
+    margin: 18px 0 8px;
+  }
+  .row { display: flex; justify-content: space-between; gap: 12px; }
+  .role { font-weight: 600; }
+  .meta { color: #555; font-size: 9.5pt; white-space: nowrap; }
+  ul { margin: 4px 0 10px; padding-left: 18px; }
+  li { margin-bottom: 3px; }
+  .skills p { margin: 3px 0; }
+  .skills b { display: inline-block; min-width: 110px; }
+</style>
+</head>
+<body>
+
+<h1>Elif Demir</h1>
+<div class="contact">
+  Bilgisayar Mühendisliği (3. sınıf) &middot; İstanbul &middot;
+  elif.demir@example.com &middot; github.com/elifdemir-dev
+</div>
+
+<h2>Eğitim</h2>
+<div class="row">
+  <span class="role">Bilgisayar Mühendisliği, Lisans</span>
+  <span class="meta">2023 &ndash; devam ediyor</span>
+</div>
+<ul>
+  <li>Yıldız Teknik Üniversitesi &middot; GNO 3.902/4.00</li>
+  <li>İlgili dersler: Veri Yapıları, Veritabanı Sistemleri, İşletim Sistemleri, Bilgisayar Ağları</li>
+</ul>
+
+<h2>Deneyim</h2>
+<div class="row">
+  <span class="role">Yazılım Geliştirme Stajyeri &middot; Nurol Teknoloji</span>
+  <span class="meta">Tem &ndash; Eyl 2025</span>
+</div>
+<ul>
+  <li>Node.js ve PostgreSQL ile iç kullanıma yönelik bir envanter servisinin REST endpoint'lerini yazdım.</li>
+  <li>Mevcut endpoint'lere pagination ve tutarlı hata kodları ekledim; API dokümantasyonunu Swagger ile güncelledim.</li>
+  <li>Docker Compose ile geliştirme ortamını tek komuta indirdim, yeni gelen stajyerlerin kurulum süresi yarım güne düştü.</li>
+</ul>
+
+<h2>Projeler</h2>
+
+<div class="row">
+  <span class="role">Discord Özet Botu &middot; Python, OpenAI API</span>
+  <span class="meta">2025</span>
+</div>
+<ul>
+  <li>Sunucudaki uzun tartışmaları özetleyip kanala günlük digest gönderen bot.</li>
+  <li>İlk sürümde her mesaj için ayrı API isteği atılıyordu; mesajları batch'leyip tek istekte
+      göndererek maliyeti yaklaşık beşte birine, gecikmeyi 40 saniyeden 6 saniyeye indirdim.</li>
+  <li>Rate limit hatalarında exponential backoff ile yeniden deneme ekledim.</li>
+</ul>
+
+<div class="row">
+  <span class="role">GitHub Release Takip Akışı &middot; n8n</span>
+  <span class="meta">2025</span>
+</div>
+<ul>
+  <li>Takip ettiğim repoların release'lerini GitHub API üzerinden izleyip haftalık özet e-postası gönderen otomasyon.</li>
+  <li>Cron + script yerine n8n tercih ettim; hata ve retry davranışını görsel olarak izleyebilmek işi kolaylaştırdı.</li>
+</ul>
+
+<div class="row">
+  <span class="role">MCP Denemeleri</span>
+  <span class="meta">2026</span>
+</div>
+<ul>
+  <li>Model Context Protocol'ü inceledim; hazır bir filesystem MCP sunucusunu Claude Desktop'a bağlayıp
+      araç çağrılarının nasıl aktığını takip ettim.</li>
+  <li>Sıradaki hedefim kendi MCP sunucumu yazmak (üniversite ders programı sorgulama aracı).</li>
+</ul>
+
+<h2>Teknik Beceriler</h2>
+<div class="skills">
+  <p><b>Diller</b> Python, JavaScript, SQL, Java</p>
+  <p><b>Backend</b> Node.js, Express, REST API, PostgreSQL</p>
+  <p><b>Frontend</b> React, HTML/CSS</p>
+  <p><b>Araçlar</b> Git, Docker, Postman, n8n, OpenAI API</p>
+</div>
+
+<h2>Diğer</h2>
+<ul>
+  <li>Üniversite Yazılım Kulübü'nde iki dönem boyunca yeni başlayanlara Git atölyesi verdim.</li>
+  <li>Diller: Türkçe (ana dil), İngilizce (ileri düzey)</li>
+</ul>
+
+</body>
+</html>

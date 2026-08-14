@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Mert Aydın - CV</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Segoe UI", Calibri, Arial, sans-serif;
+    font-size: 10.5pt; line-height: 1.45; color: #1a1a1a;
+    max-width: 178mm; margin: 0 auto; padding: 10mm;
+  }
+  h1 { font-size: 20pt; margin: 0 0 2px; letter-spacing: -0.3px; }
+  .contact { font-size: 9.5pt; color: #555; margin-bottom: 16px; }
+  h2 {
+    font-size: 11pt; text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 1.5px solid #1a1a1a; padding-bottom: 3px;
+    margin: 18px 0 8px;
+  }
+  .row { display: flex; justify-content: space-between; gap: 12px; }
+  .role { font-weight: 600; }
+  .meta { color: #555; font-size: 9.5pt; white-space: nowrap; }
+  ul { margin: 4px 0 10px; padding-left: 18px; }
+  li { margin-bottom: 3px; }
+  .skills p { margin: 3px 0; }
+  .skills b { display: inline-block; min-width: 110px; }
+</style>
+</head>
+<body>
+
+<h1>Mert Aydın</h1>
+<div class="contact">
+  Yazılım Mühendisliği (4. sınıf) &middot; Ankara &middot;
+  mert.aydin@example.com &middot; github.com/mertaydin
+</div>
+
+<h2>Eğitim</h2>
+<div class="row">
+  <span class="role">Yazılım Mühendisliği, Lisans</span>
+  <span class="meta">2022 &ndash; devam ediyor</span>
+</div>
+<ul>
+  <li>Hacettepe Üniversitesi &middot; GNO 3.14/4.00</li>
+  <li>İlgili dersler: Nesneye Yönelik Programlama, Veritabanı Yönetim Sistemleri, Yazılım Mimarisi</li>
+</ul>
+
+<h2>Deneyim</h2>
+<div class="row">
+  <span class="role">Backend Geliştirme Stajyeri &middot; Paratek Fintech</span>
+  <span class="meta">Tem &ndash; Ağu 2025</span>
+</div>
+<ul>
+  <li>Spring Boot ile ödeme mutabakat servisinin REST endpoint'lerini geliştirdim.</li>
+  <li>Pagination, standart hata kodları ve idempotency key kullanımını proje üzerinde öğrenip uyguladım.</li>
+  <li>Geliştirdiğim endpoint'ler için Postman koleksiyonu hazırladım, ekip bunu regresyon testinde kullandı.</li>
+  <li>MySQL üzerinde yavaş çalışan iki sorguyu index ekleyerek iyileştirdim.</li>
+</ul>
+
+<h2>Projeler</h2>
+
+<div class="row">
+  <span class="role">Kütüphane Rezervasyon Sistemi &middot; Bitirme Projesi</span>
+  <span class="meta">2025 &ndash; 2026</span>
+</div>
+<ul>
+  <li>Spring Boot + MySQL backend, basit bir HTML/CSS arayüz.</li>
+  <li>Kullanıcı kaydı, kitap arama, rezervasyon ve gecikme bildirimi modülleri.</li>
+  <li>Rol tabanlı yetkilendirme (öğrenci / görevli) ekledim.</li>
+</ul>
+
+<div class="row">
+  <span class="role">Hava Durumu Panosu</span>
+  <span class="meta">2024</span>
+</div>
+<ul>
+  <li>Açık bir hava durumu REST API'sinden veri çekip beş günlük tahmini gösteren küçük web uygulaması.</li>
+  <li>API anahtarını gizlemek için istekleri kendi backend'im üzerinden geçirdim.</li>
+</ul>
+
+<h2>Teknik Beceriler</h2>
+<div class="skills">
+  <p><b>Diller</b> Java, SQL, JavaScript (temel), HTML/CSS</p>
+  <p><b>Backend</b> Spring Boot, REST API, MySQL</p>
+  <p><b>Araçlar</b> Git, Postman, IntelliJ IDEA, Maven</p>
+</div>
+
+<h2>Diğer</h2>
+<ul>
+  <li>Üniversite futbol takımında üç yıldır oynuyorum.</li>
+  <li>Diller: Türkçe (ana dil), İngilizce (orta düzey)</li>
+</ul>
+
+</body>
+</html>

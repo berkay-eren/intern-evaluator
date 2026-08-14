@@ -52,19 +52,41 @@ Node sırası:
 
 | # | Node adı | Tip / Ayar |
 |---|---|---|
-| 1 | `On form submission` | Form Trigger. Alanlar: `Ad Soyad` (text), `Teknolojiler` (text), `Kendini Anlat` (textarea), `CV` (file, .pdf) |
-| 2 | `Extract from File` | Operation: Extract From PDF · Input Binary Field: `CV` → çıktı: `text` |
-| 3 | `Edit Fields` | `prompt_text` alanını kurar: `<basvuru>` + `<cv_belgesi>` etiketli metin |
-| 4 | `HTTP Request` | POST `https://api.anthropic.com/v1/messages` · Header Auth (`x-api-key`) · headers: `anthropic-version: 2023-06-01`, `content-type: application/json` · body: `n8n/anthropic-request-body.json` |
-| 5 | `Code` | Cevabı ayrıştırır + doğrular (JS) |
-| 6 | `Supabase` | `applications` tablosuna insert (Define Below: full_name, technologies, description, cv_text) |
-| 7 | `Code1` | `evaluations` satırını hazırlar (`application_id` + değerlendirme alanları) |
-| 8 | `Supabase1` | `evaluations` tablosuna insert (Auto-Map Input Data to Columns) |
+| 1 | `Application Form` | Form Trigger. Alanlar: `Ad Soyad` (text), `Teknolojiler` (text), `Kendini Anlat` (textarea), `CV` (file, .pdf) |
+| 2 | `Extract CV Text` | Operation: Extract From PDF · Input Binary Field: `CV` → çıktı: `text` |
+| 2b | `Upload CV` | **Paralel kol.** POST `https://<ref>.supabase.co/storage/v1/object/cvs/{{ $execution.id }}.pdf` · Header Auth (`Authorization: Bearer <service_role>`) · Body Content Type: `n8n Binary File`, Input Data Field Name: `CV` |
+| 3 | `Build Prompt` | `prompt_text` alanını kurar: `<basvuru>` + `<cv_belgesi>` etiketli metin |
+| 4 | `Evaluate with Claude` | POST `https://api.anthropic.com/v1/messages` · Header Auth (`x-api-key`) · headers: `anthropic-version: 2023-06-01`, `content-type: application/json` · body: `n8n/anthropic-request-body.json` |
+| 5 | `Parse and Validate` | Cevabı ayrıştırır + doğrular (JS) |
+| 6 | `Save Application` | `applications` insert (Define Below: full_name, technologies, description, cv_text, cv_url) |
+| 7 | `Build Evaluation Row` | `evaluations` satırını hazırlar (`application_id` + değerlendirme alanları) |
+| 8 | `Save Evaluation` | `evaluations` insert (Auto-Map Input Data to Columns) |
 
-**Durum:** 1–6 test edildi ve çalışıyor. 7–8 kuruldu, doğrulaması bekleniyor.
+**Durum:** 1–8 + `Upload CV` uçtan uca test edildi, çalışıyor.
 
 Örnek gerçek sonuç: skor 29, tavsiye "Hayir", `dogrulama_sorunlari: []`.
 Maliyet ≈ aday başına 6 sent (3.263 input + 1.916 output token).
+
+### `Upload CV` paralel kolu — neden böyle
+
+Hem `Extract CV Text` hem `Upload CV` formdan gelen PDF binary'sine ihtiyaç duyuyor, ama
+ikisi de çıktısında binary taşımıyor. Bu yüzden zincirlenemiyorlar; ikisi de
+`Application Form`'a bağlı, paralel çalışıyor.
+
+`Save Application` upload sonucunu `{{ $('Upload CV').first().json.Key }}` ile okuyor
+(`.item` değil `.first()` — paralel kollarda öğe eşleştirmesi kopabiliyor).
+
+**Bilinen zayıf nokta:** `Upload CV`'nin önce çalışacağı grafik tarafından garanti
+edilmiyor; n8n kolları canvas'taki dikey konuma göre sıralıyor (Execution Order `v1`).
+Bu yüzden `Upload CV` canvas'ta `Extract CV Text`'in üstünde durmalı.
+Kurşun geçirmez çözüm: iki kolu bir `Merge` node'unda birleştirmek.
+
+### Storage
+
+- Bucket `cvs`, **private**. CV kişisel veri; erişim imzalı (süreli) URL ile olacak.
+- `applications.cv_url` tam URL değil, **yol** tutuyor: `cvs/15.pdf`
+  (dosya adı `$execution.id` — aday uuid'si insert sırasında üretildiği için upload anında elde yok).
+- İmzalı URL dashboard'da sunucu tarafında üretilecek.
 
 ---
 
@@ -97,8 +119,8 @@ Her kriter ayrıca `status: kanitli | bilinmiyor` taşır — "bilgi yok" ile "y
 
 ## Yapılacaklar
 
-- [ ] 8. node'un (evaluations insert) testini tamamla
-- [ ] CV dosyasını Supabase Storage'a yükle, `cv_url` alanını doldur
+- [x] 8. node'un (evaluations insert) testini tamamla
+- [x] CV dosyasını Supabase Storage'a yükle, `cv_url` alanını doldur
 - [ ] Workflow'u aktifleştir → Production form URL'i
 - [ ] Hata yönetimi (LLM hatası, PDF okunamaması, doğrulama sorunları)
 - [ ] Next.js public dashboard: liste + skora göre sıralama + Evet/Belki/Hayır filtresi
